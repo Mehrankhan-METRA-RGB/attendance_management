@@ -1,0 +1,13 @@
+<application>
+  <component name="FindSettings">
+    <option name="customScope" value="Project 'attendance_managemnt-master'" />
+    <option name="defaultScopeName" value="Project 'attendance_managemnt-master'" />
+    <option name="SEARCH_SCOPE" value="Project 'attendance_managemnt-master'" />
+    <mask>*.css</mask>
+    <mask>*.html</mask>
+    <mask>*.xml</mask>
+    <mask>*.jsp</mask>
+    <mask>*.properties</mask>
+    <mask>*.java</mask>
+  </component>
+</application>
