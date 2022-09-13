@@ -5,4 +5,5 @@ class Collection {
   static String get teacher => 'teacher';
   static String get students => 'students';
   static String get classCol=>'classCol';
+  static String get attendance=>'attendance';
 }

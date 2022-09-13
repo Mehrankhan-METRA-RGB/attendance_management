@@ -32,7 +32,6 @@ class _RegisterStudentState extends State<RegisterStudent> {
     super.initState();
   }
 
-  StudentNotifier studentNotifier = StudentNotifier();
   String extension = '';
   String currentImage = '';
   @override
@@ -48,14 +47,7 @@ class _RegisterStudentState extends State<RegisterStudent> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ValueListenableBuilder(
-                valueListenable: studentNotifier.progressNotifier,
-                builder: (context, progress, child) {
-                  return LinearProgressIndicator(
-                    value: progress,
-                    backgroundColor: Colors.grey,
-                  );
-                }),
+
             ClipOval(
               child: currentImage != ''
                   ? Image.file(

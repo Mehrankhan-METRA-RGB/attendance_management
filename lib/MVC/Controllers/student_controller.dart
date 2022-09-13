@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:attendance_managemnt_system/Constants/packages/choice/choice_selector.dart';
 import 'package:attendance_managemnt_system/Constants/widgets/widgets.dart';
 import 'package:attendance_managemnt_system/MVC/Models/Collections.dart';
 import 'package:attendance_managemnt_system/MVC/Models/student_model.dart';
@@ -37,7 +38,7 @@ class StudentController {
           case TaskState.running:
             final progress = 100.0 *
                 (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
-            imgProgress.imageProgress(progress);
+            // imgProgress.imageProgress(progress);
             print("Upload is $progress% complete.");
             break;
           case TaskState.paused:
@@ -93,7 +94,7 @@ class StudentController {
           case TaskState.running:
             final progress = 100.0 *
                 (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
-            imgProgress.imageProgress(progress);
+            // imgProgress.imageProgress(progress);
             print("Upload is $progress% complete.");
             break;
           case TaskState.paused:
@@ -118,6 +119,11 @@ class StudentController {
 
     users.add(data.copyWith(img: url).toMap()).then((value) {
       users.doc(value.id).update({'id': value.id});
+      users
+          .doc(value.id)
+          .collection(Collection.attendance)
+          .add(Attendance(date: ' ', status: ' ').toMap());
+
       App.instance
           .snackBar(context, text: 'student Added!! ', bgColor: Colors.green);
       return value;
@@ -127,23 +133,23 @@ class StudentController {
     });
   }
 
-  checkStatus({
+  Future<String?> status({
     required teacherId,
     required studentId,
     required classId,
-  }) {
-    FirebaseFirestore.instance
+    required currentDate,
+  }) async {
+    return await FirebaseFirestore.instance
         .collection(Collection.teacher)
         .doc(teacherId)
         .collection(Collection.classCol)
         .doc(classId)
         .collection(Collection.students)
+        .doc(studentId)
+        .collection(Collection.attendance)
+        .doc(currentDate)
         .get()
-        .then((value) {
-      print(value.docs.where((element) => element['id'] == studentId));
-    }).catchError((onError) {
-      print(onError);
-    });
+        .then((data) => Attendance.fromMap(data.data()!).status);
   }
 
   addAttendance(
@@ -168,65 +174,83 @@ class StudentController {
 
   updateAttendance(
       {required teacherId,
-        required studentId,
-        required classId,
-        required Attendance oldData,
-        required Attendance newData}) {
-    final DocumentReference<Map<String, dynamic>> ref = FirebaseFirestore
+      required studentId,
+      required classId,
+      required date,
+      // required Attendance oldData,
+      required Attendance newData}) {
+    final CollectionReference<Map<String, dynamic>> ref = FirebaseFirestore
         .instance
         .collection(Collection.teacher)
         .doc(teacherId)
         .collection(Collection.classCol)
         .doc(classId)
         .collection(Collection.students)
-        .doc(studentId);
+        .doc(studentId)
+        .collection(Collection.attendance);
 
-    ref.update({
-      'attendance': FieldValue.arrayRemove([oldData.toMap()]),
-    });
-    ref.update({
-      'attendance': FieldValue.arrayUnion([newData.toMap()]),
-    });
+    ref.doc(date).set(newData.toMap());
   }
 
-
+  Future<String?> getStatus({
+    required teacherId,
+    required studentId,
+    required classId,
+    required date,
+  }) async {
+    final DocumentSnapshot<Map<String, dynamic>> ref = await FirebaseFirestore
+        .instance
+        .collection(Collection.teacher)
+        .doc(teacherId)
+        .collection(Collection.classCol)
+        .doc(classId)
+        .collection(Collection.students)
+        .doc(studentId)
+        .collection(Collection.attendance)
+        .doc(date)
+        .get();
+    Attendance attendance = Attendance(date: 'date', status: 'status');
+    if (ref.exists) {
+      attendance = Attendance.fromMap(ref.data()!);
+    }
+    return attendance.status;
+  }
 }
 
 class StudentNotifier {
-  static BoxDecoration defaultDecoration() => BoxDecoration(
-      color: const Color(0xffffffff),
-      boxShadow: const [
-        BoxShadow(
-            offset: Offset(0.5, 0.5),
-            spreadRadius: 0.5,
-            blurRadius: 0.5,
-            color: Color(0x353d3d3d))
-      ],
-      borderRadius: BorderRadius.circular(5));
-  ValueNotifier colorNotifierPresent = ValueNotifier(defaultDecoration());
-  ValueNotifier colorNotifierLeave = ValueNotifier(defaultDecoration());
-  ValueNotifier colorNotifierAbsent = ValueNotifier(defaultDecoration());
-  ValueNotifier progressNotifier = ValueNotifier(0.00);
+  ValueNotifier<int> present = ValueNotifier<int>(0);
+  ValueNotifier<int> leave = ValueNotifier<int>(0);
+  ValueNotifier<int> absent = ValueNotifier<int>(0);
+  ValueNotifier<Map<String, int>> statusCounter =
+      ValueNotifier<Map<String, int>>({'present': 0, 'leave': 0, 'absent': 0});
 
-  void presentColorChangeTo(BoxDecoration decoration) {
-    colorNotifierPresent.value = decoration;
-    colorNotifierLeave.value = defaultDecoration();
-    colorNotifierAbsent.value = defaultDecoration();
+
+  clear(){
+    present.value=0;
+    absent.value=0;
+    leave.value=0;
+
   }
 
-  void imageProgress(progress) {
-    progressNotifier.value = progress;
-  }
+  void setStatusCounter(status) {
 
-  void leaveColorChangeTo(BoxDecoration decoration) {
-    colorNotifierLeave.value = decoration;
-    colorNotifierPresent.value = defaultDecoration();
-    colorNotifierAbsent.value = defaultDecoration();
-  }
 
-  void absentColorChangeTo(BoxDecoration decoration) {
-    colorNotifierLeave.value = defaultDecoration();
-    colorNotifierPresent.value = defaultDecoration();
-    colorNotifierAbsent.value = decoration;
+
+    switch (status) {
+      case 'present':
+        present.value++;
+        break;
+      case 'leave':
+        leave.value++;
+        break;
+      case 'absent':
+        absent.value++;
+        break;
+    }
+    statusCounter.value = {
+      'present': present.value,
+      'leave': leave.value,
+      'absent': absent.value
+    };
   }
 }
