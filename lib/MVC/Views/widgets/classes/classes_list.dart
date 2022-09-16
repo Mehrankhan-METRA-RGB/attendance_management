@@ -4,6 +4,7 @@ import 'package:attendance_managemnt_system/MVC/Controllers/teacher_controller.d
 import 'package:attendance_managemnt_system/MVC/Models/Collections.dart';
 import 'package:attendance_managemnt_system/MVC/Models/teacher_model.dart';
 import 'package:attendance_managemnt_system/MVC/Views/partials/date_picker.dart';
+import 'package:attendance_managemnt_system/MVC/Views/partials/pdf/class_report.dart';
 import 'package:attendance_managemnt_system/MVC/Views/widgets/student/students_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -63,24 +64,10 @@ class _ClassesListState extends State<ClassesList> {
           ),
         ],
       ),
-      body: Column(
+      body: Column(mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Padding(
-          //   padding:
-          //   const EdgeInsets.only(top: 1.0, bottom: 2, left: 5, right: 5),
-          //   child: TextField(
-          //     decoration: InputDecoration(
-          //       hintText: 'Search ...',
-          //       suffixIcon: IconButton(
-          //           onPressed: () {},
-          //           icon: const Icon(
-          //             Icons.search,
-          //             color: Colors.green,
-          //           )),
-          //       border: const OutlineInputBorder(),
-          //     ),
-          //   ),
-          // ),
+
           Expanded(
               child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
@@ -135,30 +122,32 @@ class _ClassesListState extends State<ClassesList> {
                                     )
                                 ],
                               )
-                            : Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'No Students Yet',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline4
-                                        ?.copyWith(color: Colors.blueGrey),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  RegisterClass(
-                                                      teacherPrefs: prefs!)));
-                                    },
-                                    child: const Text('Add Class'),
-                                  )
-                                ],
-                              ),
+                            : Container(alignment: Alignment.center,height: MediaQuery.of(context).size.height,
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'No Classes Yet',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline4
+                                          ?.copyWith(color: Colors.blueGrey),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RegisterClass(
+                                                        teacherPrefs: prefs!)));
+                                      },
+                                      child: const Text('Add Class'),
+                                    )
+                                  ],
+                                ),
+                            ),
                       );
                     } else {
                       return Center(

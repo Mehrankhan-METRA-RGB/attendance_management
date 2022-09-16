@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:attendance_managemnt_system/MVC/Models/student_model.dart';
@@ -11,43 +12,53 @@ import '../../../../Constants/widgets/widgets.dart';
 import '../../../Controllers/class_controller.dart';
 import '../../../Controllers/student_controller.dart';
 
-class RegisterStudent extends StatefulWidget {
-  const RegisterStudent(
-      {required this.teacherPrefs, required this.classPrefs, Key? key})
+class UpdateStudent extends StatefulWidget {
+  const UpdateStudent(
+      {required this.teacherPrefs,
+      required this.studentPrefs,
+      required this.classPrefs,
+      Key? key})
       : super(key: key);
-
+  final Student studentPrefs;
   final Teacher teacherPrefs;
   final Class classPrefs;
   @override
-  _RegisterStudentState createState() => _RegisterStudentState();
+  _UpdateStudentState createState() => _UpdateStudentState();
 }
 
-class _RegisterStudentState extends State<RegisterStudent> {
+class _UpdateStudentState extends State<UpdateStudent> {
   final TextEditingController name = TextEditingController();
   final TextEditingController rollNo = TextEditingController();
-  final registrationFormKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    name.text = widget.studentPrefs.name!;
+    rollNo.text = widget.studentPrefs.rollNo!;
   }
 
+  StudentNotifier stdNotify = StudentNotifier();
   String extension = '';
   String currentImage = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Student'),
+        title: const Text('Update Student'),
         elevation: 0,
       ),
       body: Form(
-        key: registrationFormKey,
+        key: formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-
+            ValueListenableBuilder(
+                valueListenable: StudentNotifier().uploadProgress,
+                builder: (context, progress, widget) =>
+                    LinearProgressIndicator(value:progress, color: Colors.redAccent,)),
+            const SizedBox(height: 20,),
             ClipOval(
               child: currentImage != ''
                   ? Image.file(
@@ -56,8 +67,8 @@ class _RegisterStudentState extends State<RegisterStudent> {
                       width: 100,
                       height: 100,
                     )
-                  : Image.asset(
-                      'assets/icons/profile.png',
+                  : Image.network(
+                      widget.studentPrefs.img!,
                       fit: BoxFit.cover,
                       width: 100,
                       height: 100,
@@ -86,7 +97,7 @@ class _RegisterStudentState extends State<RegisterStudent> {
             Padding(
               padding: const EdgeInsets.only(top: 30.0),
               child: AppButton(
-                child: const Text('add'),
+                child: const Text('Update'),
                 onPressed: () => _submit(context),
               ),
             ),
@@ -105,20 +116,21 @@ class _RegisterStudentState extends State<RegisterStudent> {
     return result;
   }
 
-  _submit(BuildContext context)  {
-    if (registrationFormKey.currentState!.validate()) {
-      StudentController.instance.add(context,
-          path: currentImage,
-          extension: extension,
-          data: Student(
-            name: name.text,
-            rollNo: rollNo.text,
-            attendance: [],
-            studentClass: widget.classPrefs.id,
-            teacherId: widget.teacherPrefs.id,
-          ),
-          teacherId: widget.teacherPrefs.id,
-          classId: widget.classPrefs.id);
+  _submit(BuildContext context) async {
+    if (formKey.currentState!.validate()) {
+      log(currentImage);
+      log(widget.studentPrefs.img!);
+      StudentController.instance.update(context,
+        path: currentImage,
+        extension: extension,
+        teacherId: widget.teacherPrefs.id,
+        classId: widget.classPrefs.id,
+        studentId: widget.studentPrefs.id,
+        data: widget.studentPrefs.copyWith(
+          name: name.text,
+          rollNo: rollNo.text,
+        ),
+      );
 
     }
   }

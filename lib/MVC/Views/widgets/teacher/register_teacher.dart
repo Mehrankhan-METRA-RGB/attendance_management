@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import '../../Widgets/teacher/login.dart';
 
-
 class RegisterTeacher extends StatefulWidget {
   const RegisterTeacher({Key? key}) : super(key: key);
 
@@ -59,31 +58,30 @@ class _RegisterTeacherState extends State<RegisterTeacher> {
                 child: const Text('Register'),
                 onPressed: () {
                   if (registrationFormKey.currentState!.validate()) {
-                    TeacherController.instance.add(context,
-                        data: Teacher(
-                          name: name.text,
-                          email: email.text,
-                          password: password.text,
-                        )).then((value) {if(value.id.isNotEmpty){
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const Login()));
-                    }});
+                    TeacherController.instance
+                        .add(context,
+                            data: Teacher(
+                              name: name.text,
+                              email: email.text,
+                              password: password.text,
+                            ))
+                        .then((value) {
+                      if (value.id.isNotEmpty) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Login()));
+                      }
+                    });
                   }
                 },
               ),
             ),
-           
           ],
         ),
       ),
     );
   }
 //
-// var marker =(LatLng latLong)=> const Marker(
-//   markerId: MarkerId('Company1'),
-//   position:latLong ,
-//   infoWindow: InfoWindow(
-//     title: 'Van Tracker',
-//     snippet: 'googleplex',
-//   ),
-// );
+
 }

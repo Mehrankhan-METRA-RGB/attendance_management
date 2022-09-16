@@ -7,6 +7,7 @@ class SelectorButton extends StatelessWidget {
       {required this.color,
       required this.onAbsent,
       required this.onLeave,
+      required this.isShimmers,
       required this.onPresent,
       Key? key})
       : super(key: key);
@@ -14,6 +15,7 @@ class SelectorButton extends StatelessWidget {
   final void Function() onLeave;
   final void Function() onAbsent;
   final Color color;
+  final bool isShimmers;
   StudentNotifier studentNotifier = StudentNotifier();
 
   @override
@@ -34,7 +36,7 @@ class SelectorButton extends StatelessWidget {
             alignment: Alignment.center,
             decoration: defaultDecoration()
                 .copyWith(color: color == Colors.green ? color : Colors.white.withOpacity(0.5)),
-            child:  Text(
+            child:  Text(isShimmers?' ':
               'Present',
               style: TextStyle(color:  color == Colors.green
                   ? Colors.white
@@ -56,7 +58,7 @@ class SelectorButton extends StatelessWidget {
             alignment: Alignment.center,
             decoration: defaultDecoration()
                 .copyWith(color: color == Colors.orange ? color : Colors.white.withOpacity(0.5)),
-            child:  Text(
+            child:  Text(isShimmers?' ':
               'Leave',
               style: TextStyle(color:  color == Colors.orange
                   ? Colors.white
@@ -78,7 +80,7 @@ class SelectorButton extends StatelessWidget {
             alignment: Alignment.center,
             decoration: defaultDecoration()
                 .copyWith(color: color == Colors.red ? color : Colors.white.withOpacity(0.5)),
-            child: Text(
+            child: Text(isShimmers?' ':
               'Absent',
               style: TextStyle(
                   color: color == Colors.red

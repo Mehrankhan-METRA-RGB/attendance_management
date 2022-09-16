@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -13,6 +12,10 @@ class Student {
     @required this.department,
     @required this.teacherId,
     @required this.attendance,
+    this.leaves = 0,
+    this.presents = 0,
+    this.absents = 0,
+    this.percentage = 0.0,
   });
 
   final String? id;
@@ -22,6 +25,10 @@ class Student {
   final String? studentClass;
   final String? department;
   final String? teacherId;
+  final int leaves;
+  final int presents;
+  final int absents;
+  final double percentage;
   final List<Attendance>? attendance;
 
   Student copyWith({
@@ -32,6 +39,10 @@ class Student {
     String? studentClass,
     String? department,
     String? teacherId,
+    int? leaves,
+    int? presents,
+    int? absents,
+    double? percentage,
     List<Attendance>? attendance,
   }) =>
       Student(
@@ -42,6 +53,10 @@ class Student {
         studentClass: studentClass ?? this.studentClass,
         department: department ?? this.department,
         teacherId: teacherId ?? this.teacherId,
+        leaves:leaves?? this.leaves,
+        absents:absents?? this.absents,
+        presents:presents?? this.presents,
+        percentage:percentage?? this.percentage,
         attendance: attendance ?? this.attendance,
       );
 
@@ -50,26 +65,35 @@ class Student {
   String toJson() => json.encode(toMap());
 
   factory Student.fromMap(Map<String, dynamic> json) => Student(
-    id: json["id"],
-    name: json["name"],
-    rollNo: json["rollNo"],
-    img: json["img"],
-    studentClass: json["class"],
-    department: json["department"],
-    teacherId: json["teacherId"],
-    attendance: List<Attendance>.from(json["attendance"].map((x) => Attendance.fromMap(x))),
-  );
+        id: json["id"],
+        name: json["name"],
+        rollNo: json["rollNo"],
+        img: json["img"],
+        studentClass: json["class"],
+        department: json["department"],
+        teacherId: json["teacherId"],
+        leaves: json["leaves"],
+        absents: json["absents"],
+        presents: json["presents"],
+        percentage: json["percentage"],
+        attendance: List<Attendance>.from(
+            json["attendance"].map((x) => Attendance.fromMap(x))),
+      );
 
   Map<String, dynamic> toMap() => {
-    "id": id,
-    "name": name,
-    "rollNo": rollNo,
-    "img": img,
-    "class": studentClass,
-    "department": department,
-    "teacherId": teacherId,
-    "attendance": List<dynamic>.from(attendance!.map((x) => x.toMap())),
-  };
+        "id": id,
+        "name": name,
+        "rollNo": rollNo,
+        "img": img,
+        "class": studentClass,
+        "department": department,
+        "teacherId": teacherId,
+        "leaves": leaves,
+        "absents": absents,
+        "presents": presents,
+        "percentage": percentage,
+        "attendance": List<dynamic>.from(attendance!.map((x) => x.toMap())),
+      };
 }
 
 class Attendance {
@@ -90,17 +114,18 @@ class Attendance {
         status: status ?? this.status,
       );
 
-  factory Attendance.fromJson(String str) => Attendance.fromMap(json.decode(str));
+  factory Attendance.fromJson(String str) =>
+      Attendance.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
   factory Attendance.fromMap(Map<String, dynamic> json) => Attendance(
-    date: json["date"],
-    status: json["status"],
-  );
+        date: json["date"],
+        status: json["status"],
+      );
 
   Map<String, dynamic> toMap() => {
-    "date": date,
-    "status": status,
-  };
+        "date": date,
+        "status": status,
+      };
 }

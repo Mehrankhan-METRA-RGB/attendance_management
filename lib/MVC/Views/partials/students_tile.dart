@@ -11,6 +11,7 @@ class AppTile extends StatelessWidget {
     required  this.onLeave,
      required this.onPresent,
       this.onTap,
+        this.isShimmers=false,
       this.onLongPress,
       Key? key})
       : super(key: key);
@@ -21,6 +22,7 @@ class AppTile extends StatelessWidget {
   final String img;
   final String? subTitle;
   final Color? color;
+  final bool isShimmers;
   final void Function()? onTap;
   final void Function()? onLongPress;
   @override
@@ -45,7 +47,7 @@ class AppTile extends StatelessWidget {
         child: Row(
           children: [
             ClipOval(
-              child: img.isNotEmpty
+              child:isShimmers?Container(): img.isNotEmpty
                   ? Image.network(
                       img,
                       fit: BoxFit.cover,
@@ -61,8 +63,8 @@ class AppTile extends StatelessWidget {
             ),
             Expanded(
               child: ListTile(
-                title: Text(subTitle ?? 'Mehran Khan'),
-                subtitle: Text(title ?? '999999'),
+                title: Text(subTitle ?? ' '),
+                subtitle: Text(title ?? ' '),
                 contentPadding: const EdgeInsets.only(
                     top: 2, bottom: 2, left: 20, right: 5),
               ),
@@ -73,6 +75,7 @@ class AppTile extends StatelessWidget {
                 child: SelectorButton(
                   color:color??Colors.white,
                   onPresent: onPresent,
+                  isShimmers:isShimmers,
                   onLeave: onLeave,
                   onAbsent: onAbsent,
                 ))
