@@ -50,7 +50,7 @@ class App {
         ),
       );
 
-  dropDown(
+  dropDown(BuildContext context,
       {required List? values,
       required List<String>? titles,
       String heading = "title",

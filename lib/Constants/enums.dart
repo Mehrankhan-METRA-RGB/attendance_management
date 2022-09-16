@@ -14,3 +14,4 @@ enum CRUDEnum{
   read,write,delete,update
 }
 enum CookiesKeys{adminUserName,adminPassword,id}
+enum Status{present,absent,leave}

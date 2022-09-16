@@ -1,15 +1,14 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
 
-import 'package:attendance_managemnt_system/Constants/packages/choice/choice_selector.dart';
 import 'package:attendance_managemnt_system/Constants/widgets/widgets.dart';
 import 'package:attendance_managemnt_system/MVC/Models/Collections.dart';
 import 'package:attendance_managemnt_system/MVC/Models/student_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../Constants/values.dart';
 
@@ -37,23 +36,21 @@ class StudentController {
       uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
         switch (taskSnapshot.state) {
           case TaskState.running:
-            final progress = 100.0 *
-                (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
-            // imgProgress.imageProgress(progress);
-            print("Upload is $progress% complete.");
+            imgProgress.updateUploadProgress(100.0 *
+                (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes));
             break;
           case TaskState.paused:
-            print("Upload is paused.");
+            log("Upload is paused.");
             break;
           case TaskState.canceled:
-            print("Upload was canceled");
+            log("Upload was canceled");
             break;
           case TaskState.error:
             // Handle unsuccessful uploads
             break;
           case TaskState.success:
-            // Handle successful uploads on complete
-            // ...
+            log("Uploaded Successfully");
+
             break;
         }
       });
@@ -63,7 +60,7 @@ class StudentController {
     return url;
   }
 
-  add(BuildContext context,
+  Future<void> add(BuildContext context,
       {required teacherId,
       required path,
       required extension,
@@ -95,20 +92,20 @@ class StudentController {
           case TaskState.running:
             final progress = 100.0 *
                 (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
-            // imgProgress.imageProgress(progress);
-            print("Upload is $progress% complete.");
+            imgProgress.updateUploadProgress(progress);
+            log("Upload is $progress% complete.");
             break;
           case TaskState.paused:
-            print("Upload is paused.");
+            log("Upload is paused.");
             break;
           case TaskState.canceled:
-            print("Upload was canceled");
+            log("Upload was canceled");
             break;
           case TaskState.error:
-            print("Upload was Error");
+            log("Upload was Error");
             break;
           case TaskState.success:
-            print("Upload was success");
+            log("Upload was success");
             // ...
             break;
         }
@@ -123,10 +120,20 @@ class StudentController {
       users
           .doc(value.id)
           .collection(Collection.attendance)
-          .add(Attendance(date: ' ', status: ' ').toMap());
+          //add a temp doc
+          //because collection creation need at least one doc while creating
+          .add(Attendance(date: '${DateTime.now()}', status: ' ').toMap())
+          //delete doc again
+          .then((ref) => users
+              .doc(value.id)
+              .collection(Collection.attendance)
+              .doc(ref.id)
+              .delete());
 
       App.instance
           .snackBar(context, text: 'student Added!! ', bgColor: Colors.green);
+      Navigator.pop(context);
+
       return value;
     }).catchError((error) {
       App.instance.snackBar(context, text: 'Error ', bgColor: Colors.red);
@@ -134,46 +141,115 @@ class StudentController {
     });
   }
 
-  Future<String?> status({
+  ///Delete Students
+  void delete({
     required teacherId,
     required studentId,
     required classId,
-    required currentDate,
   }) async {
-    return await FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection(Collection.teacher)
         .doc(teacherId)
         .collection(Collection.classCol)
         .doc(classId)
         .collection(Collection.students)
         .doc(studentId)
-        .collection(Collection.attendance)
-        .doc(currentDate)
-        .get()
-        .then((data) => Attendance.fromMap(data.data()!).status);
+        .delete()
+        .then((value) => log('Deleted'));
   }
 
-  addAttendance(
+  ///Update Students
+  void update(BuildContext context,
       {required teacherId,
       required studentId,
       required classId,
-      bool isExist = false,
-      required Attendance data}) {
-    final DocumentReference<Map<String, dynamic>> ref = FirebaseFirestore
-        .instance
+      required path,
+      required extension,
+      required Student data}) async {
+    StudentNotifier imgProgress = StudentNotifier();
+    final reference = FirebaseFirestore.instance
         .collection(Collection.teacher)
         .doc(teacherId)
         .collection(Collection.classCol)
         .doc(classId)
         .collection(Collection.students)
         .doc(studentId);
+    final storageRef = FirebaseStorage.instance.ref();
+    String? url = '';
+    File file;
+    if (path != '') {
+      file = File(path);
 
-    ref.update({
-      'attendance': FieldValue.arrayUnion([data.toMap()]),
-    });
-  }
+      // delete old File
+      if (data.img != null) {
+        FirebaseStorage.instance.refFromURL(data.img!).delete();
+      }
 
-  updateAttendance(
+      final uploadTask = storageRef
+          .child(
+              "students/teacher-$teacherId/class-$classId/${generateRandomString(10)}.$extension")
+          .putFile(file.absolute);
+
+      uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
+        switch (taskSnapshot.state) {
+          case TaskState.running:
+            final progress = 100.0 *
+                (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
+            imgProgress.updateUploadProgress(progress);
+            log("Upload is $progress% complete.");
+            break;
+          case TaskState.paused:
+            log("Upload is paused.");
+            break;
+          case TaskState.canceled:
+            log("Upload was canceled");
+            break;
+          case TaskState.error:
+            log("Upload was Error");
+            break;
+          case TaskState.success:
+            log("Upload was success");
+            // ...
+            break;
+        }
+      });
+      await uploadTask.whenComplete(() async {
+        url = await uploadTask.snapshot.ref.getDownloadURL();
+        log('url:$url');
+      });
+
+      await reference.update(data.copyWith(img: url).toMap()).then((value) {
+        App.instance.snackBar(context, text: 'Updated', bgColor: Colors.green);
+        Navigator.pop(context);
+      });
+    } else {
+      await reference.update(data.toMap()).then((value) {
+        App.instance.snackBar(context, text: 'Updated', bgColor: Colors.green);
+        Navigator.pop(context);
+      }
+          );
+  }}
+
+  // Future<String?> status({
+  //   required teacherId,
+  //   required studentId,
+  //   required classId,
+  //   required currentDate,
+  // }) async {
+  //   return await FirebaseFirestore.instance
+  //       .collection(Collection.teacher)
+  //       .doc(teacherId)
+  //       .collection(Collection.classCol)
+  //       .doc(classId)
+  //       .collection(Collection.students)
+  //       .doc(studentId)
+  //       .collection(Collection.attendance)
+  //       .doc(currentDate)
+  //       .get()
+  //       .then((data) => Attendance.fromMap(data.data()!).status);
+  // }
+
+  void updateAttendance(
       {required teacherId,
       required studentId,
       required classId,
@@ -193,6 +269,7 @@ class StudentController {
     ref.doc(date).set(newData.toMap());
   }
 
+  ///get selected date STATUS of student i.e: [present,absent,leave]
   Future<String?> getStatus({
     required teacherId,
     required studentId,
@@ -217,10 +294,10 @@ class StudentController {
     return attendance.status;
   }
 
- List<String>? theCounts(teacherId, date, classId) {
+  List<String>? theCounts(teacherId, date, classId) {
     StudentNotifier studentNotifier = StudentNotifier();
     studentNotifier.clear();
-    List<String>? dataList =[];
+    List<String>? dataList = [];
     final ref = FirebaseFirestore.instance
         .collection(Collection.teacher)
         .doc(teacherId)
@@ -238,11 +315,9 @@ class StudentController {
             .get()
             .then((data) {
           Attendance atd = Attendance.fromJson(jsonEncode(data.data()));
-          print('Sub-----theCount:${atd.status}');
           dataList.add(atd.status!);
         });
       }
-
     });
 
     return dataList;
@@ -253,10 +328,17 @@ class StudentNotifier extends ChangeNotifier {
   ValueNotifier<List> present = ValueNotifier<List>([]);
   ValueNotifier<List> leave = ValueNotifier<List>([]);
   ValueNotifier<List> absent = ValueNotifier<List>([]);
+  ValueNotifier<double> uploadProgress = ValueNotifier<double>(0.00);
+
   ValueNotifier<Map<String, int>> statusCounter =
       ValueNotifier<Map<String, int>>({'present': 0, 'leave': 0, 'absent': 0});
 
-  clear() {
+  void updateUploadProgress(double val) {
+    uploadProgress.value = val;
+    notifyListeners();
+  }
+
+  void clear() {
     present.value = [];
     absent.value = [];
     leave.value = [];
@@ -264,7 +346,7 @@ class StudentNotifier extends ChangeNotifier {
   }
 
   void setStatusCounter(list) {
-    // print(list);
+    // log(list);
     for (var val in list) {
       switch (val) {
         case 'present':
@@ -285,13 +367,5 @@ class StudentNotifier extends ChangeNotifier {
       'absent': absent.value.length
     };
     notifyListeners();
-    // print( 'present');
-    // print( present.value.length);
-    // print( 'leave');
-    //
-    // print(     leave.value.length);
-    // print( 'absent');
-    //
-    // print(    absent.value.length);
   }
 }

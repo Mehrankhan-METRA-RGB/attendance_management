@@ -1,16 +1,20 @@
 import 'dart:convert';
+import 'package:attendance_managemnt_system/Constants/packages/banner/banner_widget.dart';
 import 'package:attendance_managemnt_system/Constants/widgets/widgets.dart';
 import 'package:attendance_managemnt_system/MVC/Controllers/date_controller.dart';
 import 'package:attendance_managemnt_system/MVC/Controllers/student_controller.dart';
 import 'package:attendance_managemnt_system/MVC/Controllers/teacher_controller.dart';
 import 'package:attendance_managemnt_system/MVC/Models/Collections.dart';
 import 'package:attendance_managemnt_system/MVC/Models/student_model.dart';
+import 'package:attendance_managemnt_system/MVC/Views/widgets/student/navigation.dart';
+import 'package:attendance_managemnt_system/MVC/Views/widgets/student/update_student.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../../Models/teacher_model.dart';
 import '../../Widgets/student/register_student.dart';
 import '../../Widgets/student/student_profile.dart';
+import '../../partials/pdf/class_report.dart';
 import '../../partials/students_tile.dart';
 
 class StudentsList extends StatefulWidget {
@@ -55,6 +59,12 @@ class _StudentsListState extends State<StudentsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: Drawer(
+        child: NavInStudent(
+          classPrefs: widget.classPrefs,
+          teacherPrefs: teacherPrefs,
+        ),
+      ),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
@@ -128,7 +138,6 @@ class _StudentsListState extends State<StudentsList> {
                   )
                   .snapshots(),
               builder: (context, snapshot) {
-
                 students = snapshot.data?.docs
                     .map((e) => Student.fromJson(jsonEncode(e.data())))
                     .toList();
@@ -192,57 +201,102 @@ class _StudentsListState extends State<StudentsList> {
                                                   ),
                                                   onLongPress: () {
                                                     App.instance.dialog(context,
-                                                        child: SizedBox(
-                                                            width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                0.9,
-                                                            height: 300,
-                                                            child: const Center(
-                                                              child: Text(
-                                                                  'Are you Sure to do This?'),
-                                                            )));
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(20),
+                                                          width: 120,
+                                                          height: 90,
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceAround,
+                                                            children: [
+                                                              IconButton(
+                                                                onPressed: () {
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (context) => UpdateStudent(
+                                                                              teacherPrefs: teacherPrefs!,
+                                                                              studentPrefs: std,
+                                                                              classPrefs: widget.classPrefs)));
+                                                                },
+                                                                icon:
+                                                                    const Icon(
+                                                                  Icons.edit,
+                                                                  size: 36,
+                                                                  color: Colors
+                                                                      .teal,
+                                                                ),
+                                                                tooltip: 'Edit',
+                                                              ),
+                                                              IconButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  AppBanner.instance.show(
+                                                                      context,
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .redAccent,
+                                                                      content: Text(
+                                                                          'Are you sure to delete ${std.name}',
+                                                                          style:
+                                                                              const TextStyle(color: Colors.white)),
+                                                                      onSubmit:
+                                                                          () async {
+                                                                    StudentController.instance.delete(
+                                                                        teacherId:
+                                                                            teacherPrefs!
+                                                                                .id,
+                                                                        studentId: std
+                                                                            .id,
+                                                                        classId: widget
+                                                                            .classPrefs
+                                                                            .id);
+                                                                  });
+                                                                },
+                                                                icon:
+                                                                    const Icon(
+                                                                  Icons.delete,
+                                                                  size: 36,
+                                                                  color: Colors
+                                                                      .teal,
+                                                                ),
+                                                                tooltip:
+                                                                    'Delete',
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ));
                                                   },
                                                   onTap: () {
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
                                                             builder: (context) =>
-                                                                const StudentProfile()));
+                                                                StudentProfile(
+                                                                  studentPrefs:
+                                                                      std,
+                                                                  classPrefs: widget
+                                                                      .classPrefs,
+                                                                  teacherPrefs:
+                                                                      teacherPrefs,
+                                                                )));
                                                   },
                                                 );
                                               } else {
-                                                return Container(
-                                                  margin: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 5,
-                                                      horizontal: 10),
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 8.0,
-                                                      horizontal: 15),
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                          color: Colors.white54,
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          8)),
-                                                          boxShadow: [
-                                                        BoxShadow(
-                                                            color: Colors.grey,
-                                                            offset: Offset(
-                                                                0.5, 0.5),
-                                                            blurRadius: 2,
-                                                            spreadRadius: 1,
-                                                            blurStyle:
-                                                                BlurStyle.outer)
-                                                      ]),
-                                                  child: const Center(
-                                                      child:
-                                                          CircularProgressIndicator()),
+                                                return AppTile(
+                                                  img: '',
+                                                  onTap: () {},
+                                                  onLongPress: () {},
+                                                  color:
+                                                      Colors.blueGrey.shade50,
+                                                  isShimmers: true,
+                                                  onAbsent: () {},
+                                                  onLeave: () {},
+                                                  onPresent: () {},
                                                 );
                                               }
                                             })
@@ -272,38 +326,38 @@ class _StudentsListState extends State<StudentsList> {
               }),
         ],
       ),
-      bottomNavigationBar: ValueListenableBuilder(
-          valueListenable: studentNotifier.statusCounter,
-          builder: (context, counts, child) {
-            return BottomNavigationBar(
-              items: [
-                BottomNavigationBarItem(
-                  icon: NavItem(
-                    color: Colors.green,
-                    value: '${counts['present']}',
-                  ),
-                  label: 'Present',
-                  tooltip: ' Present',
-                ),
-                BottomNavigationBarItem(
-                  icon: NavItem(
-                    color: Colors.orange,
-                    value: '${counts['leave']}',
-                  ),
-                  label: 'Leave',
-                  tooltip: ' Leave',
-                ),
-                BottomNavigationBarItem(
-                  icon: NavItem(
-                    color: Colors.red,
-                    value: '${counts['absent']}',
-                  ),
-                  label: 'Absent',
-                  tooltip: ' Absents',
-                ),
-              ],
-            );
-          }),
+      // bottomNavigationBar: ValueListenableBuilder(
+      //     valueListenable: studentNotifier.statusCounter,
+      //     builder: (context, counts, child) {
+      //       return BottomNavigationBar(
+      //         items: [
+      //           BottomNavigationBarItem(
+      //             icon: NavItem(
+      //               color: Colors.green,
+      //               value: '${counts['present']}',
+      //             ),
+      //             label: 'Present',
+      //             tooltip: ' Present',
+      //           ),
+      //           BottomNavigationBarItem(
+      //             icon: NavItem(
+      //               color: Colors.orange,
+      //               value: '${counts['leave']}',
+      //             ),
+      //             label: 'Leave',
+      //             tooltip: ' Leave',
+      //           ),
+      //           BottomNavigationBarItem(
+      //             icon: NavItem(
+      //               color: Colors.red,
+      //               value: '${counts['absent']}',
+      //             ),
+      //             label: 'Absent',
+      //             tooltip: ' Absents',
+      //           ),
+      //         ],
+      //       );
+      //     }),
     );
   }
 
@@ -330,8 +384,7 @@ class _StudentsListState extends State<StudentsList> {
         teacherId: teacherPrefs!.id,
         classId: widget.classPrefs.id,
         studentId: studentId,
-        newData: Attendance(
-            date: widget.date, status: status),
+        newData: Attendance(date: widget.date, status: status),
         date: widget.date);
 
     if (tempStudents != []) {
@@ -343,7 +396,6 @@ class _StudentsListState extends State<StudentsList> {
   }
 
   Color statusColor(String status) {
-
     switch (status) {
       case 'present':
         return Colors.green;
@@ -355,8 +407,6 @@ class _StudentsListState extends State<StudentsList> {
         return Colors.white;
     }
   }
-
-
 
   InputDecoration _searchDecoration() => InputDecoration(
         hintText: 'RollNo search ...',

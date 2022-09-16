@@ -29,7 +29,7 @@ class _RegisterClassState extends State<RegisterClass> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register Teacher'),
+        title: const Text('New Class'),
         elevation: 0,
       ),
       body: Form(
@@ -38,7 +38,7 @@ class _RegisterClassState extends State<RegisterClass> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AppTextField(
-              hint: 'Name',
+              hint: 'Class Name',
               controller: name,
               onChange: (a) {},
             ),
@@ -63,10 +63,7 @@ class _RegisterClassState extends State<RegisterClass> {
                             teacherId: widget.teacherPrefs.id)
                         .then((value) {
                       if (value.id.isNotEmpty) {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Login()));
+                        Navigator.pop(context);
                       }
                     });
                   }
