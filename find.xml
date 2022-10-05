@@ -1,8 +1,8 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="File '…/lib/View/Table/iupac.dart [periodic_table]'" />
-    <option name="defaultScopeName" value="File '…/lib/View/Table/iupac.dart [periodic_table]'" />
-    <option name="SEARCH_SCOPE" value="File '…/lib/View/Table/iupac.dart [periodic_table]'" />
+    <option name="customScope" value="Project 'periodic_table'" />
+    <option name="defaultScopeName" value="Project 'periodic_table'" />
+    <option name="SEARCH_SCOPE" value="Project 'periodic_table'" />
     <mask>*.css</mask>
     <mask>*.html</mask>
     <mask>*.xml</mask>
