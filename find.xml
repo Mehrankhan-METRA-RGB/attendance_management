@@ -1,8 +1,8 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="File '…/lib/presentation/users/home_Page/reservation_screen/reservation_screen.dart'" />
-    <option name="defaultScopeName" value="File '…/lib/presentation/users/home_Page/reservation_screen/reservation_screen.dart'" />
-    <option name="SEARCH_SCOPE" value="File '…/lib/presentation/users/home_Page/reservation_screen/reservation_screen.dart'" />
+    <option name="customScope" value="File '…/lib/data/DataSource/LocalData/local_credentials.dart'" />
+    <option name="defaultScopeName" value="File '…/lib/data/DataSource/LocalData/local_credentials.dart'" />
+    <option name="SEARCH_SCOPE" value="File '…/lib/data/DataSource/LocalData/local_credentials.dart'" />
     <mask>*.css</mask>
     <mask>*.html</mask>
     <mask>*.xml</mask>
