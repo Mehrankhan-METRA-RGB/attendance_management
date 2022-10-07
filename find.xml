@@ -1,8 +1,8 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="Project 'periodic_table'" />
-    <option name="defaultScopeName" value="Project 'periodic_table'" />
-    <option name="SEARCH_SCOPE" value="Project 'periodic_table'" />
+    <option name="customScope" value="File '…/lib/presentation/users/home_Page/reservation_screen/reservation_screen.dart'" />
+    <option name="defaultScopeName" value="File '…/lib/presentation/users/home_Page/reservation_screen/reservation_screen.dart'" />
+    <option name="SEARCH_SCOPE" value="File '…/lib/presentation/users/home_Page/reservation_screen/reservation_screen.dart'" />
     <mask>*.css</mask>
     <mask>*.html</mask>
     <mask>*.xml</mask>
