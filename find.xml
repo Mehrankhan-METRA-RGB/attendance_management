@@ -1,8 +1,8 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="File '…/lib/data/DataSource/LocalData/local_credentials.dart'" />
-    <option name="defaultScopeName" value="File '…/lib/data/DataSource/LocalData/local_credentials.dart'" />
-    <option name="SEARCH_SCOPE" value="File '…/lib/data/DataSource/LocalData/local_credentials.dart'" />
+    <option name="customScope" value="Project 'Estrahty'" />
+    <option name="defaultScopeName" value="Project 'Estrahty'" />
+    <option name="SEARCH_SCOPE" value="Project 'Estrahty'" />
     <mask>*.css</mask>
     <mask>*.html</mask>
     <mask>*.xml</mask>
