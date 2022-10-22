@@ -1,8 +1,8 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="File '…/lib/presentation/users/login/create_Account/create_account.dart'" />
-    <option name="defaultScopeName" value="File '…/lib/presentation/users/login/create_Account/create_account.dart'" />
-    <option name="SEARCH_SCOPE" value="File '…/lib/presentation/users/login/create_Account/create_account.dart'" />
+    <option name="customScope" value="File '…/lib/domain/models/OffersModels/offer_model.dart'" />
+    <option name="defaultScopeName" value="File '…/lib/domain/models/OffersModels/offer_model.dart'" />
+    <option name="SEARCH_SCOPE" value="File '…/lib/domain/models/OffersModels/offer_model.dart'" />
     <mask>*.css</mask>
     <mask>*.html</mask>
     <mask>*.xml</mask>
