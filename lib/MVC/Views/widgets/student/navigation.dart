@@ -53,7 +53,7 @@ class NavInStudent extends StatelessWidget {
             onTap: () {
               App.instance.dialog(context,
                   child: SizedBox(
-                    height: 300,
+                    height: 400,
                     width: MediaQuery.of(context).size.width*0.7,
                     child: MultiDatePicker(
                       teacherPrefs: teacherPrefs!,
@@ -63,21 +63,21 @@ class NavInStudent extends StatelessWidget {
               // ClassReport.instance.widget(classPrefs:classPrefs!, teacherPrefs: teacherPrefs!);
             },
           ),
-          ListTile(
-            style: ListTileStyle.drawer,
-            title: const Text(
-              'Test',
-              style: TextStyle(color: Colors.white),
-            ),
-            leading: const Icon(
-              Icons.picture_as_pdf_outlined,
-              color: Colors.white,
-            ),
-            onTap: () {
-              String a='2002-09-19 00:00:00.000';
-              log('${DateTime.parse(a).isBefore(DateTime.now())}');
-            },
-          ),
+          // ListTile(
+          //   style: ListTileStyle.drawer,
+          //   title: const Text(
+          //     'Test',
+          //     style: TextStyle(color: Colors.white),
+          //   ),
+          //   leading: const Icon(
+          //     Icons.picture_as_pdf_outlined,
+          //     color: Colors.white,
+          //   ),
+          //   onTap: () {
+          //     String a='2002-09-19 00:00:00.000';
+          //     log('${DateTime.parse(a).isBefore(DateTime.now())}');
+          //   },
+          // ),
         ],
       ),
     );

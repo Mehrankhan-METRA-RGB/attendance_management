@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:attendance_managemnt_system/MVC/Models/student_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../Constants/enums.dart';
+import '../../Constants/widgets/widgets.dart';
 import '../Models/Collections.dart';
 import '../Models/teacher_model.dart';
 
@@ -17,7 +19,7 @@ class PdfController {
       {required Teacher teacher,
       required Class classPref,
       String? maxDate,
-      String? minDate}) async {
+      String? minDate,required BuildContext context}) async {
     List<Student> stdList = [];
     return FirebaseFirestore.instance
         .collection(Collection.teacher)
@@ -66,15 +68,19 @@ class PdfController {
 
           ///presents percentage
           double percentage = (presents * 100) / total;
-          log('$percentage');
+          // log('$percentage');
 
-          return std.copyWith(
+          Student newStd= std.copyWith(
               leaves: leaves,
               presents: presents,
               absents: absents,
               percentage: percentage);
-        }).then((value) => stdList.add(value));
+          stdList.add(newStd);
+          // print(newStd.percentage);
+
+        });
       }
+
       return stdList;
     });
   }

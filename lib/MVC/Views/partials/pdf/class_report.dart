@@ -16,6 +16,8 @@ class ClassReport {
     required Class classPrefs,
     required Teacher teacherPrefs,
     required List<Student> data,
+    required String minDate,
+    required String maxDate
   }) async {
     final pdf = Document(
       author: teacherPrefs.name,
@@ -58,9 +60,9 @@ class ClassReport {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text('From: ${DateNotifier().minDate.value}',
+                            Text('From: ${minDate.replaceAll('00:00:00.000', '')}',
                                 style: Theme.of(context).tableCell),
-                            Text('To: ${DateNotifier().maxDate.value}',
+                            Text('To: ${maxDate.replaceAll('00:00:00.000', '')}',
                                 style: Theme.of(context).tableCell),
                           ]),
                       SizedBox(height: 20),

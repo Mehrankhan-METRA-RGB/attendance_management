@@ -1,4 +1,4 @@
-import 'package:attendance_managemnt_system/Constants/packages/choice/choice_selector.dart';
+import 'package:attendance_managemnt_system/Constants/widgets/widgets.dart';
 import 'package:attendance_managemnt_system/MVC/Controllers/date_controller.dart';
 import 'package:attendance_managemnt_system/MVC/Controllers/pdf_controller.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +7,13 @@ import 'package:scroll_date_picker/scroll_date_picker.dart';
 import '../../../Models/teacher_model.dart';
 import '../../partials/pdf/class_report.dart';
 class MultiDatePicker extends StatelessWidget {
-   MultiDatePicker(
+   const MultiDatePicker(
       {Key? key, required this.teacherPrefs, required this.classPrefs})
       : super(key: key);
   // final Teacher teacherPrefs;
   final Class classPrefs;
   final Teacher teacherPrefs;
-    DateNotifier date = DateNotifier();
+  static  DateNotifier date = DateNotifier();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -96,18 +96,29 @@ class MultiDatePicker extends StatelessWidget {
                   )),
               TextButton(
                   onPressed: () async {
-
+                    // s(BuildContext context){
+                    //   App.instance.snackBar(context,text: 'PDF Generated in Documents Folder',bgColor: Colors.green);
+                    //
+                    // }
                     Navigator.pop(context);
                     await PdfController.instance
                         .generateReport(
                             teacher: teacherPrefs,
                             classPref: classPrefs,
                             maxDate: date.maxDate.value.toString(),
-                            minDate: date.minDate.value.toString())
+                            minDate: date.minDate.value.toString(),
+                    context: context)
                         .then((data) async => await ClassReport.instance.widget(
                             classPrefs: classPrefs,
                             teacherPrefs: teacherPrefs,
-                            data: data));
+                            data: data,
+                      minDate: date.minDate.value.toString(),
+                      maxDate: date.maxDate.value.toString(),
+
+                    )).whenComplete((){
+
+                    });
+
                   },
                   child: const Text(
                     'Generate',
