@@ -1,8 +1,8 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="Project 'Launch-Art-Media'" />
-    <option name="defaultScopeName" value="Project 'Launch-Art-Media'" />
-    <option name="SEARCH_SCOPE" value="Project 'Launch-Art-Media'" />
+    <option name="customScope" value="Directory '…/lib/presentation/users/Legals'" />
+    <option name="defaultScopeName" value="Directory '…/lib/presentation/users/Legals'" />
+    <option name="SEARCH_SCOPE" value="Directory '…/lib/presentation/users/Legals'" />
     <mask>*.css</mask>
     <mask>*.html</mask>
     <mask>*.xml</mask>
