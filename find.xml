@@ -1,8 +1,8 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="File '…/lib/presentation/users/home_Page/profile_screen/explore_Profile/wallet/transection_details.dart'" />
-    <option name="defaultScopeName" value="File '…/lib/presentation/users/home_Page/profile_screen/explore_Profile/wallet/transection_details.dart'" />
-    <option name="SEARCH_SCOPE" value="File '…/lib/presentation/users/home_Page/profile_screen/explore_Profile/wallet/transection_details.dart'" />
+    <option name="customScope" value="File '…/lib/presentation/vendor/home/EditProfile/vendor_edit_profile.dart'" />
+    <option name="defaultScopeName" value="File '…/lib/presentation/vendor/home/EditProfile/vendor_edit_profile.dart'" />
+    <option name="SEARCH_SCOPE" value="File '…/lib/presentation/vendor/home/EditProfile/vendor_edit_profile.dart'" />
     <mask>*.css</mask>
     <mask>*.html</mask>
     <mask>*.xml</mask>
