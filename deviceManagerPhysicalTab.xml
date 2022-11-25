@@ -31,8 +31,8 @@
           </Key>
         </key>
         <name value="samsung SM-A325F" />
-        <target value="Android 11.0" />
-        <api value="androidversion:30:null:null:true" />
+        <target value="Android 12.0" />
+        <api value="androidversion:31:null:null:true" />
       </PhysicalDevice>
       <PhysicalDevice>
         <key>
