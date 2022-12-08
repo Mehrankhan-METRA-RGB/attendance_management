@@ -1,8 +1,8 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="File '…/lib/presentation/vendor/home/EditProfile/vendor_edit_profile.dart'" />
-    <option name="defaultScopeName" value="File '…/lib/presentation/vendor/home/EditProfile/vendor_edit_profile.dart'" />
-    <option name="SEARCH_SCOPE" value="File '…/lib/presentation/vendor/home/EditProfile/vendor_edit_profile.dart'" />
+    <option name="customScope" value="File '…/android/app/src/main/AndroidManifest.xml'" />
+    <option name="defaultScopeName" value="File '…/android/app/src/main/AndroidManifest.xml'" />
+    <option name="SEARCH_SCOPE" value="File '…/android/app/src/main/AndroidManifest.xml'" />
     <mask>*.css</mask>
     <mask>*.html</mask>
     <mask>*.xml</mask>
