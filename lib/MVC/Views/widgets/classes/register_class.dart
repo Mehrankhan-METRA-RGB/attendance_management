@@ -4,7 +4,6 @@ import 'package:attendance_managemnt_system/MVC/Views/partials/text_field.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Controllers/class_controller.dart';
-import '../../Widgets/teacher/login.dart';
 
 class RegisterClass extends StatefulWidget {
   const RegisterClass({required this.teacherPrefs, Key? key}) : super(key: key);
@@ -56,10 +55,7 @@ class _RegisterClassState extends State<RegisterClass> {
                     ClassController.instance
                         .add(context,
                             data: Class(
-                              name: name.text,
-                              department: department.text
-
-                            ),
+                                name: name.text, department: department.text),
                             teacherId: widget.teacherPrefs.id)
                         .then((value) {
                       if (value.id.isNotEmpty) {

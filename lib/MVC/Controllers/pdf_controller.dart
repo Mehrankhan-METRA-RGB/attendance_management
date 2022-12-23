@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
+
 import 'package:attendance_managemnt_system/MVC/Models/student_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../Constants/enums.dart';
-import '../../Constants/widgets/widgets.dart';
 import '../Models/Collections.dart';
 import '../Models/teacher_model.dart';
 
@@ -19,7 +18,8 @@ class PdfController {
       {required Teacher teacher,
       required Class classPref,
       String? maxDate,
-      String? minDate,required BuildContext context}) async {
+      String? minDate,
+      required BuildContext context}) async {
     List<Student> stdList = [];
     return FirebaseFirestore.instance
         .collection(Collection.teacher)
@@ -46,7 +46,8 @@ class PdfController {
             .then((atd) {
           Iterable<Attendance> attendances = atd.docs
               .map((e) => Attendance.fromJson(jsonEncode(e.data())))
-              .where((at) => DateTime.parse(at.date!).isAfter(DateTime.parse(minDate!)) &&
+              .where((at) =>
+                  DateTime.parse(at.date!).isAfter(DateTime.parse(minDate!)) &&
                   DateTime.parse(at.date!).isBefore(DateTime.parse(maxDate!)));
 
           // log('STUDENT::::::::::${std.id}-${std.name}');
@@ -58,26 +59,23 @@ class PdfController {
           // }
 
           int total = attendances.length;
-          int presents =
-              attendances.where((e) => e.status =='present').length;
+          int presents = attendances.where((e) => e.status == 'present').length;
           int leaves =
               attendances.where((e) => e.status == Status.leave.name).length;
           int absents =
               attendances.where((e) => e.status == Status.absent.name).length;
 
-
           ///presents percentage
           double percentage = (presents * 100) / total;
           // log('$percentage');
 
-          Student newStd= std.copyWith(
+          Student newStd = std.copyWith(
               leaves: leaves,
               presents: presents,
               absents: absents,
               percentage: percentage);
           stdList.add(newStd);
           // print(newStd.percentage);
-
         });
       }
 

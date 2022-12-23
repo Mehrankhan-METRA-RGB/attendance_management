@@ -11,7 +11,7 @@ class ClassController {
   ClassController._private();
 
   static final instance = ClassController._private();
-
+  ///Update
   Future<void> update(BuildContext context,
       {required String collection,
       required String document,
@@ -31,6 +31,7 @@ class ClassController {
     });
   }
 
+  ///ADD
   Future<DocumentReference> add(BuildContext context,
       {required teacherId, required Class data}) async {
     CollectionReference users =
@@ -51,12 +52,17 @@ class ClassController {
     });
   }
 
+
+
   Future<List<Teacher>> fetch({collection}) async {
     return FirebaseFirestore.instance.collection(collection).get().then(
         (QuerySnapshot querySnapshot) => querySnapshot.docs
             .map((e) => Teacher.fromJson(jsonEncode(e.data())))
             .toList());
   }
+
+
+
 
   Future<void> delete(BuildContext context, {collection, docs}) {
     CollectionReference users =

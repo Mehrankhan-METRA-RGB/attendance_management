@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:attendance_managemnt_system/Constants/packages/banner/banner_widget.dart';
 import 'package:attendance_managemnt_system/Constants/widgets/widgets.dart';
 import 'package:attendance_managemnt_system/MVC/Controllers/date_controller.dart';
@@ -6,16 +7,15 @@ import 'package:attendance_managemnt_system/MVC/Controllers/student_controller.d
 import 'package:attendance_managemnt_system/MVC/Controllers/teacher_controller.dart';
 import 'package:attendance_managemnt_system/MVC/Models/Collections.dart';
 import 'package:attendance_managemnt_system/MVC/Models/student_model.dart';
-import 'package:attendance_managemnt_system/MVC/Views/widgets/student/navigation.dart';
 import 'package:attendance_managemnt_system/MVC/Views/widgets/student/update_student.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import '../../../Models/teacher_model.dart';
 import '../../Widgets/student/register_student.dart';
 import '../../Widgets/student/student_profile.dart';
-import '../../partials/pdf/class_report.dart';
 import '../../partials/students_tile.dart';
+import 'navigation.dart';
 
 class StudentsList extends StatefulWidget {
   const StudentsList({required this.date, required this.classPrefs, Key? key})
@@ -326,38 +326,6 @@ class _StudentsListState extends State<StudentsList> {
               }),
         ],
       ),
-      // bottomNavigationBar: ValueListenableBuilder(
-      //     valueListenable: studentNotifier.statusCounter,
-      //     builder: (context, counts, child) {
-      //       return BottomNavigationBar(
-      //         items: [
-      //           BottomNavigationBarItem(
-      //             icon: NavItem(
-      //               color: Colors.green,
-      //               value: '${counts['present']}',
-      //             ),
-      //             label: 'Present',
-      //             tooltip: ' Present',
-      //           ),
-      //           BottomNavigationBarItem(
-      //             icon: NavItem(
-      //               color: Colors.orange,
-      //               value: '${counts['leave']}',
-      //             ),
-      //             label: 'Leave',
-      //             tooltip: ' Leave',
-      //           ),
-      //           BottomNavigationBarItem(
-      //             icon: NavItem(
-      //               color: Colors.red,
-      //               value: '${counts['absent']}',
-      //             ),
-      //             label: 'Absent',
-      //             tooltip: ' Absents',
-      //           ),
-      //         ],
-      //       );
-      //     }),
     );
   }
 
