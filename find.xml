@@ -1,5 +1,8 @@
 <application>
   <component name="FindSettings">
+    <option name="customScope" value="File '…/lib/Application/Dashboard/Paint/Lines/line_painter_controller.dart'" />
+    <option name="defaultScopeName" value="File '…/lib/Application/Dashboard/Paint/Lines/line_painter_controller.dart'" />
+    <option name="SEARCH_SCOPE" value="File '…/lib/Application/Dashboard/Paint/Lines/line_painter_controller.dart'" />
     <mask>*.css</mask>
     <mask>*.html</mask>
     <mask>*.xml</mask>
