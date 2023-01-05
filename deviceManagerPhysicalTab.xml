@@ -4,6 +4,17 @@
       <PhysicalDevice>
         <key>
           <Key>
+            <type value="SERIAL_NUMBER" />
+            <value value="RF8RB12H8YD" />
+          </Key>
+        </key>
+        <name value="samsung SM-A325F" />
+        <target value="Android 12.0" />
+        <api value="androidversion:31:null:null:true" />
+      </PhysicalDevice>
+      <PhysicalDevice>
+        <key>
+          <Key>
             <type value="DOMAIN_NAME" />
             <value value="adb-RF8RB12H8YD-nkMHks._adb-tls-connect._tcp." />
           </Key>
@@ -42,6 +53,17 @@
           </Key>
         </key>
         <name value="TECNO TECNO CH6i" />
+        <target value="Android 12.0" />
+        <api value="androidversion:31:null:null:true" />
+      </PhysicalDevice>
+      <PhysicalDevice>
+        <key>
+          <Key>
+            <type value="DOMAIN_NAME" />
+            <value value="adb-4a69813f0820-Ll3RHD._adb-tls-connect._tcp." />
+          </Key>
+        </key>
+        <name value="Xiaomi M2010J19SG" />
         <target value="Android 12.0" />
         <api value="androidversion:31:null:null:true" />
       </PhysicalDevice>
