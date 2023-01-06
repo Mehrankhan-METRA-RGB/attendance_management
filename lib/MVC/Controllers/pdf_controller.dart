@@ -14,13 +14,15 @@ import '../Models/teacher_model.dart';
 class PdfController {
   PdfController._private();
   static final PdfController instance = PdfController._private();
-  Future<List<Student>> generateReport(
+  Future<List<ReportModel>> generateReport(
       {required Teacher teacher,
       required Class classPref,
       String? maxDate,
       String? minDate,
       required BuildContext context}) async {
     List<Student> stdList = [];
+    List<ReportModel> reportList = [];
+
     return FirebaseFirestore.instance
         .collection(Collection.teacher)
         .doc(teacher.id)
@@ -49,7 +51,6 @@ class PdfController {
               .where((at) =>
                   DateTime.parse(at.date!).isAfter(DateTime.parse(minDate!)) &&
                   DateTime.parse(at.date!).isBefore(DateTime.parse(maxDate!)));
-
           // log('STUDENT::::::::::${std.id}-${std.name}');
           // for(Attendance ad in attendances){
           //   log('date: ${ad.date!}');
@@ -65,21 +66,35 @@ class PdfController {
           int absents =
               attendances.where((e) => e.status == Status.absent.name).length;
 
-          ///presents percentage
-          double percentage = (presents * 100) / total;
-          // log('$percentage');
+          // for (DateTime dat = DateTime.parse(minDate!);
+          //     dat.isBefore(DateTime.parse(maxDate!));
+          //     dat = dat.add(const Duration(seconds: 24 * 60 * 60))) {
+          //   log(dat.toString());
+          // }
 
-          Student newStd = std.copyWith(
-              leaves: leaves,
-              presents: presents,
-              absents: absents,
-              percentage: percentage);
-          stdList.add(newStd);
+          ///presents percentage
+          double percentage = ((presents + leaves) * 100) / total;
+          // log('$percentage');
+          ReportModel report = ReportModel(
+              id: std.rollNo,
+              name: std.name,
+              percentage: percentage,
+              attendance: attendances.toList());
+          print(attendances.map((e) => e.date).toList());
+          // Student newStd = std.copyWith(
+          //     leaves: leaves,
+          //     presents: presents,
+          //     absents: absents,
+          //     percentage: percentage);
+          reportList.add(report);
+          // stdList.add(newStd);
           // print(newStd.percentage);
         });
       }
-
-      return stdList;
+      print(reportList
+          .map((e) => e.attendance!.map((e) => e.date).toList())
+          .toList());
+      return reportList;
     });
   }
 

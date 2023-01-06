@@ -7,10 +7,10 @@ import 'package:attendance_managemnt_system/MVC/Views/widgets/classes/classes_li
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Views/Widgets/teacher/login.dart';
-
 
 class TeacherController {
   TeacherController._private();
@@ -71,6 +71,68 @@ class TeacherController {
     });
   }
 
+  Future<void> googleSigIn(BuildContext context) async {
+    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    CollectionReference fireBaseRef =
+        FirebaseFirestore.instance.collection(Collection.teacher);
+
+    await FirebaseFirestore.instance
+        .collection(Collection.teacher)
+        .where(
+          'email',
+          isEqualTo: googleUser!.email,
+        )
+        .where('id', isEqualTo: googleUser.id)
+        .get()
+        .then((QuerySnapshot querySnapshot) async {
+      if (querySnapshot.docs.isNotEmpty) {
+        Teacher a = querySnapshot.docs
+            .map((e) => Teacher.fromJson(jsonEncode(e.data())))
+            .toList()
+            .first;
+        setTeacherLocal(a);
+        App.instance.snackBar(context,
+            text: 'Signed In with google!!', bgColor: Colors.green);
+      } else {
+        await fireBaseRef
+            .doc(googleUser.id)
+            .set(Teacher(
+                    id: googleUser.id,
+                    name: googleUser.displayName,
+                    email: googleUser.email,
+                    password: googleUser.id)
+                .toMap())
+            .then((value) async {
+          await FirebaseFirestore.instance
+              .collection(Collection.teacher)
+              .where(
+                'email',
+                isEqualTo: googleUser.email,
+              )
+              .where('id', isEqualTo: googleUser.id)
+              .get()
+              .then((QuerySnapshot snap) {
+            Teacher a = snap.docs
+                .map((e) => Teacher.fromJson(jsonEncode(e.data())))
+                .toList()
+                .first;
+            setTeacherLocal(a);
+          });
+          App.instance.snackBar(context,
+              text: 'Signed In with google!!', bgColor: Colors.green);
+        }).catchError((error) {
+          App.instance
+              .snackBar(context, text: 'Error:$error ', bgColor: Colors.red);
+        });
+      }
+    }).whenComplete(() {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const ClassesList()));
+    });
+
+    // Call the googleUser's CollectionReference to add a new googleUser
+  }
+
   Future<Teacher> login(BuildContext context, {email, password}) async {
     return FirebaseFirestore.instance
         .collection(Collection.teacher)
@@ -107,6 +169,9 @@ class TeacherController {
     final prefs = await SharedPreferences.getInstance();
     for (var key in _teacher.keys) {
       await prefs.setString(key, '');
+      if (await GoogleSignIn().isSignedIn()) {
+        GoogleSignIn().signOut();
+      }
     }
 
     Navigator.pushReplacement(

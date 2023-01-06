@@ -1,31 +1,29 @@
-import 'package:attendance_managemnt_system/Constants/packages/choice/choice_selector.dart';
-import 'package:attendance_managemnt_system/MVC/Controllers/date_controller.dart';
 import 'package:attendance_managemnt_system/MVC/Controllers/pdf_controller.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
+
 import '../../../Models/student_model.dart';
 import '../../../Models/teacher_model.dart';
-import 'package:flutter/material.dart' as mt;
 
 class ClassReport {
   ClassReport._private();
   static final ClassReport instance = ClassReport._private();
 
-  widget({
-    required Class classPrefs,
-    required Teacher teacherPrefs,
-    required List<Student> data,
-    required String minDate,
-    required String maxDate
-  }) async {
+  widget(
+      {required Class classPrefs,
+      required Teacher teacherPrefs,
+      required List<ReportModel> data,
+      required String minDate,
+      required String maxDate}) async {
+    // data.sort((a, b) => a.id!.compareTo(b.id!));
     final pdf = Document(
       author: teacherPrefs.name,
     );
 
     pdf.addPage(MultiPage(
         orientation: PageOrientation.portrait,
-        pageFormat: PdfPageFormat.a4,
+        pageFormat: PdfPageFormat.a3,
         theme: ThemeData.withFont(
             base: await PdfGoogleFonts.varelaRoundRegular(),
             bold: await PdfGoogleFonts.varelaRoundRegular(),
@@ -60,9 +58,11 @@ class ClassReport {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text('From: ${minDate.replaceAll('00:00:00.000', '')}',
+                            Text(
+                                'From: ${minDate.replaceAll('00:00:00.000', '')}',
                                 style: Theme.of(context).tableCell),
-                            Text('To: ${maxDate.replaceAll('00:00:00.000', '')}',
+                            Text(
+                                'To: ${maxDate.replaceAll('00:00:00.000', '')}',
                                 style: Theme.of(context).tableCell),
                           ]),
                       SizedBox(height: 20),
@@ -71,69 +71,100 @@ class ClassReport {
                           style: Theme.of(context).tableCell),
                     ])),
             Container(
-                height: 40,
+                height: 35,
                 padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: PdfColors.blueGrey50,
                   border: Border.all(width: 0.4, color: PdfColors.black),
                 ),
                 child: Row(children: [
-                  Expanded(
-                      child: Text('No', style: Theme.of(context).tableHeader)),
-                  Expanded(
-                      child:
-                          Text('Name', style: Theme.of(context).tableHeader)),
-                  Expanded(
-                      child:
-                          Text('RollNo', style: Theme.of(context).tableHeader)),
-                  Expanded(
-                      child: Text('Attendance',
-                          style: Theme.of(context).tableHeader)),
-                  Expanded(child: Container()),
+                  SizedBox(
+                      width: 20,
+                      child: Text('RollNo',
+                          style: Theme.of(context)
+                              .tableHeader
+                              .copyWith(fontSize: 6))),
+                  SizedBox(
+                      width: 20,
+                      child: Text('Name',
+                          maxLines: 2,
+                          style: Theme.of(context)
+                              .tableHeader
+                              .copyWith(fontSize: 6))),
+                  for (DateTime dat = DateTime.parse(minDate);
+                      dat.isBefore(DateTime.parse(maxDate));
+                      dat = dat.add(const Duration(seconds: 24 * 60 * 60)))
+                    Expanded(
+                        child: Text('${dat.day}/${dat.month}',
+                            style: Theme.of(context)
+                                .tableHeader
+                                .copyWith(fontSize: 4))),
+                  SizedBox(
+                      width: 20,
+                      child: Text('%age',
+                          style: Theme.of(context)
+                              .tableHeader
+                              .copyWith(fontSize: 5))),
                 ])),
             SizedBox(height: 4),
-            for (var i = 0; i < data.length; i++)
+            for (ReportModel report in data)
               Container(
-                  height: 35,
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: PdfColors.blueGrey50,
-                    border: Border.all(width: 0.4, color: PdfColors.black),
-                  ),
+                  // height: 35,
+                  padding: const EdgeInsets.all(0),
+                  // decoration: BoxDecoration(
+                  //   color: PdfColors.blueGrey50,
+                  //   border: Border.all(width: 0.4, color: PdfColors.black),
+                  // ),
                   child: Row(children: [
                     Expanded(
-                        child: Text('${i + 1}',
-                            style: Theme.of(context).tableCell)),
+                        child: Text(report.id!,
+                            style: Theme.of(context)
+                                .tableCell
+                                .copyWith(fontSize: 5))),
+                    SizedBox(
+                        width: 20,
+                        child: Text(report.name!,
+                            style: Theme.of(context)
+                                .tableCell
+                                .copyWith(fontSize: 5))),
+                    for (DateTime dot = DateTime.parse(minDate);
+                        dot.isBefore(DateTime.parse(maxDate));
+                        dot = dot.add(const Duration(days: 1)))
+                      atdFun(context, dot, report),
                     Expanded(
-                        child: Text(data[i].name!,
-                            style: Theme.of(context).tableCell)),
-                    Expanded(
-                        child: Text(data[i].rollNo!,
-                            style: Theme.of(context).tableCell)),
-                    Expanded(
-                        child: Text('${data[i].percentage.ceilToDouble()}',
-                            style: Theme.of(context).tableCell)),
-                    Expanded(
-                        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(color:data[i].percentage > 79
-                  ? PdfColors.green
-                  : data[i].percentage > 69
-                  ? PdfColors.orange
-                  : PdfColors.red,borderRadius: BorderRadius.circular(3) ),
-
-
-            )
-          ])),
+                      child: Container(
+                          padding: const EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: PdfColors.black, width: 0.5)),
+                          child: Text(report.percentage!.toStringAsFixed(1),
+                              style: Theme.of(context)
+                                  .tableCell
+                                  .copyWith(fontSize: 6))),
+                    )
                   ])),
           ]; // Center
         }));
     await PdfController.instance
         .savePDF(await pdf.save(), classPrefs.name); // Page
+  }
+
+  atdFun(Context context, DateTime dt, ReportModel report) {
+    Attendance? atd;
+    for (Attendance at in report.attendance!) {
+      if (at.date!.contains('${dt.year}-${dt.month}-${dt.day}')) {
+        print(at.toMap());
+        atd = at;
+      }
+    }
+
+    return Expanded(
+        child: Container(
+            padding: const EdgeInsets.all(1),
+            decoration: BoxDecoration(
+                border: Border.all(color: PdfColors.black, width: 0.5)),
+            child: Text(
+                atd?.status != null ? atd!.status!.split('').first : ' ~ ',
+                style: Theme.of(context).tableCell.copyWith(fontSize: 6))));
   }
 }

@@ -8,7 +8,6 @@ import 'package:attendance_managemnt_system/MVC/Models/student_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../Constants/values.dart';
 
@@ -78,66 +77,77 @@ class StudentController {
     final storageRef = FirebaseStorage.instance.ref();
     String url = '';
     File file;
-    if (path != null) {
-      file = File(path);
+    await users.where('rollNo', isEqualTo: data.rollNo).get().then((res) async {
+      if (res.docs.isNotEmpty) {
+        App.instance.snackBar(
+          context,
+          text: 'This RollNo is already registered',
+          bgColor: Colors.orange,
+        );
+      } else {
+        if (path != null) {
+          file = File(path);
 
 // Upload file and metadata to the path 'images/mountains.jpg'
-      final uploadTask = storageRef
-          .child(
-              "students/teacher-$teacherId/class-$classId/${generateRandomString(10)}.$extension")
-          .putFile(file.absolute);
 
-      uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
-        switch (taskSnapshot.state) {
-          case TaskState.running:
-            final progress = 100.0 *
-                (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
-            imgProgress.updateUploadProgress(progress);
-            log("Upload is $progress% complete.");
-            break;
-          case TaskState.paused:
-            log("Upload is paused.");
-            break;
-          case TaskState.canceled:
-            log("Upload was canceled");
-            break;
-          case TaskState.error:
-            log("Upload was Error");
-            break;
-          case TaskState.success:
-            log("Upload was success");
-            // ...
-            break;
+          final uploadTask = storageRef
+              .child(
+                  "students/teacher-$teacherId/class-$classId/${generateRandomString(10)}.$extension")
+              .putFile(file.absolute);
+
+          uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
+            switch (taskSnapshot.state) {
+              case TaskState.running:
+                final progress = 100.0 *
+                    (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
+                imgProgress.updateUploadProgress(progress);
+                log("Upload is $progress% complete.");
+                break;
+              case TaskState.paused:
+                log("Upload is paused.");
+                break;
+              case TaskState.canceled:
+                log("Upload was canceled");
+                break;
+              case TaskState.error:
+                log("Upload was Error");
+                break;
+              case TaskState.success:
+                log("Upload was success");
+                // ...
+                break;
+            }
+          });
+          await uploadTask.whenComplete(() async {
+            url = await uploadTask.snapshot.ref.getDownloadURL();
+          });
         }
-      });
-      await uploadTask.whenComplete(() async {
-        url = await uploadTask.snapshot.ref.getDownloadURL();
-      });
-    }
 
-    users.add(data.copyWith(img: url).toMap()).then((value) {
-      users.doc(value.id).update({'id': value.id});
-      users
-          .doc(value.id)
-          .collection(Collection.attendance)
-          //add a temp doc
-          //because collection creation need at least one doc while creating
-          .add(Attendance(date: '${DateTime.now()}', status: ' ').toMap())
-          //delete doc again
-          .then((ref) => users
+        users.add(data.copyWith(img: url).toMap()).then((value) {
+          users.doc(value.id).update({'id': value.id});
+          users
               .doc(value.id)
               .collection(Collection.attendance)
-              .doc(ref.id)
-              .delete());
+              //add a temp doc
+              //because collection creation need at least one doc while creating
+              .add(Attendance(date: '${DateTime.now()}', status: ' ').toMap())
+              //delete doc again
+              .then((ref) => users
+                  .doc(value.id)
+                  .collection(Collection.attendance)
+                  .doc(ref.id)
+                  .delete());
 
-      App.instance
-          .snackBar(context, text: 'student Added!! ', bgColor: Colors.green);
-      Navigator.pop(context);
+          App.instance.snackBar(context,
+              text: 'student Added!! ', bgColor: Colors.green);
+          Navigator.pop(context);
 
-      return value;
-    }).catchError((error) {
-      App.instance.snackBar(context, text: 'Error ', bgColor: Colors.red);
-      // return null;
+          return value;
+        }).catchError((error) {
+          App.instance.snackBar(context, text: error, bgColor: Colors.red);
+          // return null;
+        });
+      }
     });
   }
 
@@ -226,9 +236,9 @@ class StudentController {
       await reference.update(data.toMap()).then((value) {
         App.instance.snackBar(context, text: 'Updated', bgColor: Colors.green);
         Navigator.pop(context);
-      }
-          );
-  }}
+      });
+    }
+  }
 
   // Future<String?> status({
   //   required teacherId,

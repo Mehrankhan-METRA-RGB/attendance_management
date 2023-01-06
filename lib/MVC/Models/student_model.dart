@@ -53,10 +53,10 @@ class Student {
         studentClass: studentClass ?? this.studentClass,
         department: department ?? this.department,
         teacherId: teacherId ?? this.teacherId,
-        leaves:leaves?? this.leaves,
-        absents:absents?? this.absents,
-        presents:presents?? this.presents,
-        percentage:percentage?? this.percentage,
+        leaves: leaves ?? this.leaves,
+        absents: absents ?? this.absents,
+        presents: presents ?? this.presents,
+        percentage: percentage ?? this.percentage,
         attendance: attendance ?? this.attendance,
       );
 
@@ -127,5 +127,57 @@ class Attendance {
   Map<String, dynamic> toMap() => {
         "date": date,
         "status": status,
+      };
+}
+
+class ReportModel {
+  ReportModel({
+    required this.id,
+    required this.name,
+    required this.percentage,
+    required this.attendance,
+  });
+
+  final String? id;
+  final String? name;
+  final double? percentage;
+  final List<Attendance>? attendance;
+
+  ReportModel copyWith({
+    String? id,
+    String? name,
+    double? percentage,
+    List<Attendance>? attendance,
+  }) =>
+      ReportModel(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        percentage: percentage ?? this.percentage,
+        attendance: attendance ?? this.attendance,
+      );
+
+  factory ReportModel.fromJson(String str) =>
+      ReportModel.fromMap(json.decode(str));
+
+  String toJson() => json.encode(toMap());
+
+  factory ReportModel.fromMap(Map<String, dynamic> json) => ReportModel(
+        id: json["id"],
+        name: json["name"],
+        percentage:
+            json["percentage"] == null ? null : json["percentage"]!.toDouble(),
+        attendance: json["attendance"] == null
+            ? null
+            : List<Attendance>.from(
+                json["attendance"]!.map((x) => Attendance.fromMap(x))),
+      );
+
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "name": name,
+        "percentage": percentage,
+        "attendance": attendance == null
+            ? null
+            : List<dynamic>.from(attendance!.map((x) => x.toMap())),
       };
 }

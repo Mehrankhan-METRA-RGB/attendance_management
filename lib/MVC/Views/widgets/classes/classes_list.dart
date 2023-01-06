@@ -4,8 +4,6 @@ import 'package:attendance_managemnt_system/MVC/Controllers/teacher_controller.d
 import 'package:attendance_managemnt_system/MVC/Models/Collections.dart';
 import 'package:attendance_managemnt_system/MVC/Models/teacher_model.dart';
 import 'package:attendance_managemnt_system/MVC/Views/partials/date_picker.dart';
-import 'package:attendance_managemnt_system/MVC/Views/partials/pdf/class_report.dart';
-import 'package:attendance_managemnt_system/MVC/Views/widgets/student/students_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -64,10 +62,10 @@ class _ClassesListState extends State<ClassesList> {
           ),
         ],
       ),
-      body: Column(mainAxisAlignment: MainAxisAlignment.center,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-
           Expanded(
               child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
@@ -108,8 +106,13 @@ class _ClassesListState extends State<ClassesList> {
                                                   fontSize: 11),
                                             ),
                                             onTap: () {
-
-                                              App.instance.dialog(context, child: SizedBox(height:340,width:300,child: AttendanceDate(classPrefs: _cls,)));
+                                              App.instance.dialog(context,
+                                                  child: SizedBox(
+                                                      height: 340,
+                                                      width: 300,
+                                                      child: AttendanceDate(
+                                                        classPrefs: _cls,
+                                                      )));
                                               // Navigator.push(
                                               //     context,
                                               //     MaterialPageRoute(
@@ -122,8 +125,10 @@ class _ClassesListState extends State<ClassesList> {
                                     )
                                 ],
                               )
-                            : Container(alignment: Alignment.center,height: MediaQuery.of(context).size.height,
-                              child: Column(
+                            : Container(
+                                alignment: Alignment.center,
+                                height: MediaQuery.of(context).size.height,
+                                child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
@@ -147,7 +152,7 @@ class _ClassesListState extends State<ClassesList> {
                                     )
                                   ],
                                 ),
-                            ),
+                              ),
                       );
                     } else {
                       return Center(

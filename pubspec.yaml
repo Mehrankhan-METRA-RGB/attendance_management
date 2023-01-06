@@ -51,6 +51,7 @@ dependencies:
   firebase_auth: ^3.8.0
   pdf: ^3.8.3
   printing: ^5.9.3
+  google_sign_in: ^5.4.2
 
 dev_dependencies:
   flutter_test:
@@ -74,7 +75,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - assets/icons/profile.png
+    - assets/icons/
     - assets/itech/
   #   - images/a_dot_ham.jpeg
 

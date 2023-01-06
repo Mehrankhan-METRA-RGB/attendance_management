@@ -22,19 +22,17 @@ class _LoginState extends State<Login> {
     // TODO: implement initState
     super.initState();
     getData();
-
   }
 
-  getData()async{
-    await    TeacherController.instance.getTeacherLocal().then((prefs) {
-      if(prefs.email!=null&&prefs.password!=null){
-        email.text=prefs.email!;
-        password.text=prefs.password!;
+  getData() async {
+    await TeacherController.instance.getTeacherLocal().then((prefs) {
+      if (prefs.email != null && prefs.password != null) {
+        email.text = prefs.email!;
+        password.text = prefs.password!;
       }
     });
-
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,10 +62,48 @@ class _LoginState extends State<Login> {
                 child: const Text('Login'),
                 onPressed: () {
                   if (registrationFormKey.currentState!.validate()) {
-                    TeacherController.instance
-                        .login(context, email: email.text, password: password.text);
+                    TeacherController.instance.login(context,
+                        email: email.text, password: password.text);
                   }
                 },
+              ),
+            ),
+            InkWell(
+              onTap: () async {
+                await TeacherController.instance.googleSigIn(context);
+              },
+              child: Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(0, 2),
+                          spreadRadius: 5,
+                          blurRadius: 6)
+                    ]),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Image.asset(
+                        'assets/icons/google.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(5.0),
+                      child: Text('SignIn with Google'),
+                    )
+                  ],
+                ),
               ),
             ),
             Padding(

@@ -77,6 +77,44 @@ class _RegisterTeacherState extends State<RegisterTeacher> {
                 },
               ),
             ),
+            InkWell(
+              onTap: () async {
+                await TeacherController.instance.googleSigIn(context);
+              },
+              child: Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(0, 2),
+                          spreadRadius: 5,
+                          blurRadius: 6)
+                    ]),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Image.asset(
+                        'assets/icons/google.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(5.0),
+                      child: Text('SignIn with Google'),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
