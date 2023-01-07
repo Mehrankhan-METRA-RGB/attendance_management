@@ -60,7 +60,8 @@ class PdfController {
           // }
 
           int total = attendances.length;
-          int presents = attendances.where((e) => e.status == 'present').length;
+          int presents =
+              attendances.where((e) => e.status == Status.present.name).length;
           int leaves =
               attendances.where((e) => e.status == Status.leave.name).length;
           int absents =
@@ -73,7 +74,7 @@ class PdfController {
           // }
 
           ///presents percentage
-          double percentage = ((presents + leaves) * 100) / total;
+          double percentage = (presents * 100) / total;
           // log('$percentage');
           ReportModel report = ReportModel(
               id: std.rollNo,

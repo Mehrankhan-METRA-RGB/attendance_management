@@ -38,6 +38,7 @@ class ClassReport {
           return [
             Container(
                 height: 200,
+                margin: const EdgeInsets.symmetric(horizontal: 5),
                 padding: const EdgeInsets.all(5),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
@@ -73,19 +74,22 @@ class ClassReport {
             Container(
                 height: 35,
                 padding: const EdgeInsets.all(5),
+                margin: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: PdfColors.blueGrey50,
                   border: Border.all(width: 0.4, color: PdfColors.black),
                 ),
                 child: Row(children: [
-                  SizedBox(
-                      width: 20,
+                  Container(
+                      width: 50,
+                      alignment: Alignment.centerLeft,
                       child: Text('RollNo',
                           style: Theme.of(context)
                               .tableHeader
                               .copyWith(fontSize: 6))),
-                  SizedBox(
-                      width: 20,
+                  Container(
+                      width: 70,
+                      alignment: Alignment.centerLeft,
                       child: Text('Name',
                           maxLines: 2,
                           style: Theme.of(context)
@@ -94,55 +98,75 @@ class ClassReport {
                   for (DateTime dat = DateTime.parse(minDate);
                       dat.isBefore(DateTime.parse(maxDate));
                       dat = dat.add(const Duration(seconds: 24 * 60 * 60)))
-                    Expanded(
+                    Container(
+                        width: 20,
+                        alignment: Alignment.center,
                         child: Text('${dat.day}/${dat.month}',
                             style: Theme.of(context)
                                 .tableHeader
                                 .copyWith(fontSize: 4))),
-                  SizedBox(
-                      width: 20,
+                  Container(
+                      width: 30,
+                      padding: const EdgeInsets.all(2),
+                      alignment: Alignment.centerLeft,
                       child: Text('%age',
                           style: Theme.of(context)
                               .tableHeader
-                              .copyWith(fontSize: 5))),
+                              .copyWith(fontSize: 6))),
                 ])),
             SizedBox(height: 4),
             for (ReportModel report in data)
-              Container(
+              Padding(
                   // height: 35,
-                  padding: const EdgeInsets.all(0),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   // decoration: BoxDecoration(
                   //   color: PdfColors.blueGrey50,
                   //   border: Border.all(width: 0.4, color: PdfColors.black),
                   // ),
-                  child: Row(children: [
-                    Expanded(
-                        child: Text(report.id!,
-                            style: Theme.of(context)
-                                .tableCell
-                                .copyWith(fontSize: 5))),
-                    SizedBox(
-                        width: 20,
-                        child: Text(report.name!,
-                            style: Theme.of(context)
-                                .tableCell
-                                .copyWith(fontSize: 5))),
-                    for (DateTime dot = DateTime.parse(minDate);
-                        dot.isBefore(DateTime.parse(maxDate));
-                        dot = dot.add(const Duration(days: 1)))
-                      atdFun(context, dot, report),
-                    Expanded(
-                      child: Container(
-                          padding: const EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: PdfColors.black, width: 0.5)),
-                          child: Text(report.percentage!.toStringAsFixed(1),
-                              style: Theme.of(context)
-                                  .tableCell
-                                  .copyWith(fontSize: 6))),
-                    )
-                  ])),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                            width: 50,
+                            height: 15,
+                            padding: const EdgeInsets.all(1),
+                            alignment: Alignment.centerLeft,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: PdfColors.black, width: 0.5)),
+                            child: Text(report.id!,
+                                style: Theme.of(context)
+                                    .tableCell
+                                    .copyWith(fontSize: 5))),
+                        Container(
+                            width: 70,
+                            height: 15,
+                            padding: const EdgeInsets.all(1),
+                            alignment: Alignment.centerLeft,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: PdfColors.black, width: 0.5)),
+                            child: Text(report.name!,
+                                style: Theme.of(context)
+                                    .tableCell
+                                    .copyWith(fontSize: 5))),
+                        for (DateTime dot = DateTime.parse(minDate);
+                            dot.isBefore(DateTime.parse(maxDate));
+                            dot = dot.add(const Duration(days: 1)))
+                          atdFun(context, dot, report),
+                        Container(
+                            width: 30,
+                            height: 15,
+                            padding: const EdgeInsets.all(2),
+                            alignment: Alignment.centerLeft,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: PdfColors.black, width: 0.5)),
+                            child: Text(report.percentage!.toStringAsFixed(1),
+                                style: Theme.of(context)
+                                    .tableCell
+                                    .copyWith(fontSize: 6)))
+                      ])),
           ]; // Center
         }));
     await PdfController.instance
@@ -152,19 +176,25 @@ class ClassReport {
   atdFun(Context context, DateTime dt, ReportModel report) {
     Attendance? atd;
     for (Attendance at in report.attendance!) {
-      if (at.date!.contains('${dt.year}-${dt.month}-${dt.day}')) {
-        print(at.toMap());
+      // print(DateTime.parse(at.date!).isAtSameMomentAs(dt));
+      if (DateTime.parse(at.date!).isAtSameMomentAs(dt)) {
         atd = at;
       }
     }
+    // print(d);
+    // print(atd?.toMap());t
 
-    return Expanded(
-        child: Container(
-            padding: const EdgeInsets.all(1),
-            decoration: BoxDecoration(
-                border: Border.all(color: PdfColors.black, width: 0.5)),
-            child: Text(
-                atd?.status != null ? atd!.status!.split('').first : ' ~ ',
-                style: Theme.of(context).tableCell.copyWith(fontSize: 6))));
+    return Container(
+        width: 20,
+        height: 15,
+        // padding: const EdgeInsets.all(1),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            border: Border.all(color: PdfColors.black, width: 0.5)),
+        child: Text(
+            atd?.status != null
+                ? atd!.status!.split('').first.toUpperCase()
+                : '  ',
+            style: Theme.of(context).tableCell.copyWith(fontSize: 6)));
   }
 }

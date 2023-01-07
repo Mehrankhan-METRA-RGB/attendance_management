@@ -60,7 +60,6 @@ class TeacherController {
     CollectionReference users =
         FirebaseFirestore.instance.collection(Collection.teacher);
 
-    // Call the user's CollectionReference to add a new user
     return users.add(data.toMap()).then((value) {
       users.doc(value.id).update({'id': value.id});
       App.instance.snackBar(context, text: 'Done!! ');

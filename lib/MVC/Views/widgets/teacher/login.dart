@@ -57,7 +57,7 @@ class _LoginState extends State<Login> {
               onChange: (a) {},
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 30.0),
+              padding: const EdgeInsets.only(top: 30.0, bottom: 30),
               child: AppButton(
                 child: const Text('Login'),
                 onPressed: () {
@@ -88,7 +88,8 @@ class _LoginState extends State<Login> {
                     ]),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(3.0),
@@ -98,10 +99,10 @@ class _LoginState extends State<Login> {
                         height: 25,
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.all(5.0),
-                      child: Text('SignIn with Google'),
-                    )
+                    // const Padding(
+                    //   padding: EdgeInsets.all(5.0),
+                    //   child: Text('SignIn with Google'),
+                    // )
                   ],
                 ),
               ),
